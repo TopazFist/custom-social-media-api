@@ -16,6 +16,15 @@ def get_users(db: Session = Depends(get_db)):
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    existing_user = (
+        db.query(models.User).filter(models.User.email == user.email).first()
+    )
+
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User with this email already exists",
+        )
 
     # hash password
     user.password = utils.hash_password(user.password)
