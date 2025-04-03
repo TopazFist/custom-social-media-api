@@ -51,3 +51,5 @@ def test_incorrecrt_login(client, email, password, status_code):
 
     assert res.status_code == status_code
     assert res.json().get('detail') == 'Invalid credentials'
+
+    
