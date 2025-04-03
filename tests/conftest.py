@@ -72,7 +72,7 @@ def test_posts(test_user, session):
             "owner_id": test_user["id"],
         },
         {"title": "2nd title", "content": "2nd content", "owner_id": test_user["id"]},
-        {"title": "3rd title", "content": "3rd content", "owner_id": test_user["id"]}
+        {"title": "3rd title", "content": "3rd content", "owner_id": test_user["id"]},
     ]
 
     def create_post_model(post):
@@ -86,3 +86,10 @@ def test_posts(test_user, session):
 
     posts = session.query(models.Post).all()
     return posts
+
+
+@pytest.fixture()
+def test_vote(test_posts, session, test_user):
+    new_vote = models.Vote(post_id=test_posts[2].id, user_id=test_user["id"])
+    session.add(new_vote)
+    session.commit()
