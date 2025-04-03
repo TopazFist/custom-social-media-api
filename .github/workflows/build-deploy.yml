@@ -70,17 +70,23 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [build]
-    environment:
-      name: production
-    steps:
-      - name: pulling git repo
-        uses: actions/checkout@v2
-      - name: deploying to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12 
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
+deploy:
+  runs-on: ubuntu-latest
+  needs: [build]
+  environment:
+    name: production
+  steps:
+    - name: Pulling Git Repository
+      uses: actions/checkout@v2
+
+    - name: Install Heroku CLI
+      run: |
+        curl https://cli-assets.heroku.com/install.sh | sh
+        heroku --version
+
+    - name: Deploying to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12 
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+        heroku_email: ${{ secrets.HEROKU_EMAIL }}
